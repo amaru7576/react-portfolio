@@ -69,7 +69,7 @@ export default class PortfolioManager extends Component {
   getPortfolioItems() {
     axios
       .get(
-        "https://jordan.devcamp.space/portfolio/portfolio_items",
+        "https://jordan.devcamp.space/portfolio/portfolio_items?order_by=created_at&direct=desc",
         {
           withCredentials: true
         }

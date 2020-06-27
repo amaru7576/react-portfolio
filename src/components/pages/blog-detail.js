@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import axios from 'axios';
+import axios from "axios";
+import ReactHtmlParser from "react-html-parser";
 
 export default class BlogDetail extends Component {
     constructor(props) {
@@ -12,13 +13,12 @@ export default class BlogDetail extends Component {
     }
 
     getBlogItem() {
-        axios.get(`https://amaru.devcamp.space/portfolio/portfolio_blog/${this.state
-        .currentId}`
+        axios.get(`https://amaru.devcamp.space/portfolio/portfolio_blogs/${this.state.currentId}`
         )
         .then(response => {
             this.setState({
                 blogItem: response.data.portfolio_blog
-            })
+            });
         })
         .catch(error => {
             console.log("getBlogItem error", error);
@@ -33,15 +33,24 @@ export default class BlogDetail extends Component {
         const {
             title,
             content,
-            feature_image_url,
+            featured_image_url,
             blog_status
         } = this.state.blogItem;
 
         return (
-            <div>
-                <h1>{title}</h1>
-                <img src={featured_image_url} />
-                <div>{content}</div>
+            <div className="blog-container">
+                <div className="content-container">
+                    <h1>{title}</h1>
+
+                    {featured_image_url ? (
+                        <div className="featured-image-wrapper">
+                            <img src={featured_image_url} />
+                        </div>
+                    ) : null}
+
+
+                    <div className="content">{ReactHtmlParser(content)}</div>
+                </div>
             </div>
         );
     }
