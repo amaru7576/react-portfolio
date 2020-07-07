@@ -13,6 +13,8 @@ export default class RichTextEditor extends Component {
         };
 
         this.onEditorStateChange = this.onEditorStateChange.bind(this);
+        this.getBase64 = this.getBase64.bind(this);
+        this.uploadFile = this.uploadFile.bind(this);
     }
 
     onEditorStateChange(editorState) {
@@ -25,14 +27,40 @@ export default class RichTextEditor extends Component {
         
     }
 
+    getBase64(file, callback) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => callback(reader.result);
+        reader.onerror = error => {};
+    }
+
+    uploadFile(file) {
+        return new Promise((resolve, reject) => {
+            this.getBase64(file, data => resolve({ data: { link: data} }));
+        });
+    }
+
     render() {
         return (
             <div>
                 <Editor    
-                editorState={this.state.editorState} 
-                wrapperClassName="demo-wrapper"
-                editorClassName="demo-editor"
-                onEditorStateChange={this.onEditorStateChange}
+                    editorState={this.state.editorState} 
+                    wrapperClassName="demo-wrapper"
+                    editorClassName="demo-editor"
+                    onEditorStateChange={this.onEditorStateChange}
+                    toolbar={{
+                        inline: { inDropdown: true },
+                        list: { inDropdown: true},
+                        textAlign: { inDropdown: true},
+                        link: { inDropdown: true},
+                        history: { inDropdown: true},
+                        image: {
+                            uploadCallback: this.uploadFile,
+                            alt: { present: true, mandatory: false },
+                            previewImage: true,
+                            inputAccept: "image/gif,image/jpeg,image/jpg,image/png,image/svg"
+                        }
+                    }}
                 />     
             </div>
         );
